@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.implicit.intents.interception" >
 
 <!--    <uses-permission android:name="test.permission" />-->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.CAMERA" />
-
-<!--    <uses-permission android:name="com.amazon.kindle.test_application" />-->
-<!--    <uses-permission android:name="com.amazon.whisperjoin.deviceprovisioningservice.WhiteListPolicyUpdate.Permission" />-->
-<!--    <uses-permission android:name="com.amazon.whisperjoin.deviceprovisioningservice.FFSServiceAction.permission" />-->
-
-
-
-
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+<!--    Insert here new permissions which are used in sendBroadcast() ... -->
 
     <application
         android:allowBackup="true"
@@ -36,7 +47,7 @@
             </intent-filter>
         </activity>
 
-<!--&lt;!&ndash;  From API ≥ 26, static-registered receivers for implicit intents will not work (apart from few exceptions)&ndash;&gt;-->
+<!--  From API ≥ 26, static-registered receivers for implicit intents will not work (apart from few exceptions)-->
 <!--        <receiver-->
 <!--            android:name=".EvilReceiver"-->
 <!--            android:exported="true"-->
@@ -50,593 +61,34 @@
         <activity
             android:name=".EvilActivity"
             android:exported="true" >
-
-<!-- ///////////////////////////////////// -->
-<!-- //// android.intent.action.VIEW //// -->
-<!-- //////////////////////////////////// -->
-
-            <!-- Matches the common case of intents with no MIME type -->
-            <intent-filter
-                android:priority="999">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="about" />
-                <data android:scheme="javascript" />
-                <data android:scheme="mailto" />
-                <data android:scheme="geo" />
-                <data android:scheme="sms" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:host="*" />
-            </intent-filter>
-
-            <!-- Same filter as above but with MIME types.
-                 Intents that do not specify a MIME type won't match. -->
-            <intent-filter
-                android:priority="999">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="about" />
-                <data android:scheme="content" />
-                <data android:scheme="javascript" />
-                <data android:scheme="mailto" />
-                <data android:scheme="geo" />
-                <data android:scheme="sms" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:host="*" />
-                <data android:mimeType="text/html"/>
-                <data android:mimeType="text/plain"/>
-                <data android:mimeType="application/xhtml+xml"/>
-            </intent-filter>
-
-            <!-- MHTML support, used for snapshots -->
-            <intent-filter
-                android:priority="999">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:host="*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-                <data android:mimeType="multipart/related"/>
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:host="*" />
-                <data android:pathPattern="/.*\\.mhtml"/>
-                <data android:pathPattern="/.*\\.mht"/>
-            </intent-filter>
-
-            <!-- Same filter as above but with mimeType="*/*".
-                 Used for handling intent send by ShareIt. -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:host="*" />
-                <data android:mimeType="*/*"/>
-                <data android:pathPattern="/.*\\.mhtml"/>
-                <data android:pathPattern="/.*\\.mht"/>
-            </intent-filter>
-
-<!-- ///////////////////////////////////// -->
-<!-- //// android.intent.action.SEND //// -->
-<!-- //////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- ///////////////////////////////////// -->
-<!-- //// android.intent.action.SENDTO //// -->
-<!-- //////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SENDTO" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SENDTO" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SENDTO" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- //////////////////////////////////// -->
-<!-- //// android.intent.action.PICK //// -->
-<!-- //////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- //////////////////////////////////// -->
-<!-- //// android.intent.action.EDIT //// -->
-<!-- //////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- /////////////////////////////////////////// -->
-<!-- //// android.intent.action.GET_CONTENT //// -->
-<!-- ////////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- ////////////////////////////////////// -->
-<!-- //// android.intent.action.INSERT //// -->
-<!-- ////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="mailto" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- ////////////////////////////////////////// -->
-<!-- //// com.android.camera.action.REVIEW //// -->
-<!-- ////////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="com.android.camera.action.REVIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="com.android.camera.action.REVIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- //////////////////////////////////////////// -->
-<!-- //// android.media.action.VIDEO_CAPTURE //// -->
-<!-- //////////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.media.action.VIDEO_CAPTURE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.media.action.VIDEO_CAPTURE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- ///////////////////////////////////////////// -->
-<!-- //// android.media.action.IMAGE_CAPTURE //// -->
-<!-- //////////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.media.action.IMAGE_CAPTURE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.media.action.IMAGE_CAPTURE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-<!-- ////////////////////////////////////// -->
-<!-- //// android.intent.action.SEARCH //// -->
-<!-- ////////////////////////////////////// -->
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" /> <!-- include the scheme if the intent as data -->
-                <data android:scheme="https" />
-                <data android:scheme="javascript" />
-                <data android:scheme="mailto" />
-                <data android:scheme="geo" />
-                <data android:scheme="file" />
-                <data android:scheme="ftp" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="tel" />
-                <data android:scheme="voicemail" />
-                <data android:scheme="market" />
-                <data android:scheme="store" />
-                <data android:scheme="android" />
-                <data android:mimeType="text/plain" /> <!-- uncomment them if data is present (extras are not data!!) -->
-                <data android:mimeType="image/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="application/*" />
-            </intent-filter>
-
-
-
-
-
-
-
-
-
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.settings.APP_NOTIFICATION_SETTINGS" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <!--                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;-->
-                <!--                <data android:mimeType="image/*"/>-->
-            </intent-filter>
-
-
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <!--                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;-->
-                <!--                <data android:mimeType="image/*"/>-->
-            </intent-filter>
-
-
-            <intent-filter
-                android:priority="999" >
-                <action android:name="android.settings.CHANNEL_NOTIFICATION_SETTINGS" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
-                <!--                <data android:scheme="https" />-->
-                <!--                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;-->
-                <!--                <data android:mimeType="image/*"/>-->
-            </intent-filter>
-
-
-
-
-
-<!--            <intent-filter-->
-<!--                android:priority="999" >-->
-<!--                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                &lt;!&ndash;                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:scheme="https" />&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="image/*"/>&ndash;&gt;-->
-<!--            </intent-filter>-->
-
-
-<!--            <intent-filter-->
-<!--                android:priority="999" >-->
-<!--                <action android:name="" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                &lt;!&ndash;                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:scheme="https" />&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="image/*"/>&ndash;&gt;-->
-<!--            </intent-filter>-->
-
-
-<!--            <intent-filter-->
-<!--                android:priority="999" >-->
-<!--                <action android:name="" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                &lt;!&ndash;                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:scheme="https" />&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="image/*"/>&ndash;&gt;-->
-<!--            </intent-filter>-->
-
-
-<!--            <intent-filter-->
-<!--                android:priority="999" >-->
-<!--                <action android:name="" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                &lt;!&ndash;                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:scheme="https" />&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="image/*"/>&ndash;&gt;-->
-<!--            </intent-filter>-->
-
-<!--            <intent-filter-->
-<!--                android:priority="999" >-->
-<!--                <action android:name="" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                &lt;!&ndash;                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:scheme="https" />&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <data android:mimeType="image/*"/>&ndash;&gt;-->
-<!--            </intent-filter>-->
-
-
-
             <intent-filter
                 android:priority="999" >
                 <action android:name="com.victim.ADD_CARD_ACTION" />
                 <category android:name="android.intent.category.DEFAULT" />
-<!--                <data android:scheme="http" /> &lt;!&ndash; include the scheme if the intent as data &ndash;&gt;-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+
+<!--                Main data schemes => uncomment it if the intent defined it-->
+<!--                <data android:scheme="http" />-->
 <!--                <data android:scheme="https" />-->
-<!--                <data android:mimeType="text/plain" /> &lt;!&ndash; uncomment them if data is present (extras are not data!!) &ndash;&gt;-->
+<!--                <data android:scheme="javascript" />-->
+<!--                <data android:scheme="mailto" />-->
+<!--                <data android:scheme="geo" />-->
+<!--                <data android:scheme="file" />-->
+<!--                <data android:scheme="ftp" />-->
+<!--                <data android:scheme="sms" />-->
+<!--                <data android:scheme="smsto" />-->
+<!--                <data android:scheme="mms" />-->
+<!--                <data android:scheme="tel" />-->
+<!--                <data android:scheme="voicemail" />-->
+<!--                <data android:scheme="market" />-->
+<!--                <data android:scheme="store" />-->
+<!--                <data android:scheme="android" />-->
+
+<!--                Main data types => uncomment them if data is present in the intent (extras are not data!!)-->
+<!--                <data android:mimeType="text/plain" />-->
 <!--                <data android:mimeType="image/*"/>-->
+<!--                <data android:mimeType="video/*" />-->
+<!--                <data android:mimeType="application/*" />-->
             </intent-filter>
         </activity>
 
