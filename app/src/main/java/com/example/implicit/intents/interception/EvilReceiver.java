@@ -12,7 +12,6 @@ public class EvilReceiver extends BroadcastReceiver {
     final static String TAG = "EVIL";
 
     public void onReceive(Context context, Intent intent) {
-
         // Get data and extras from the intent
         Uri data = intent.getData();
         Bundle extras = intent.getExtras();
